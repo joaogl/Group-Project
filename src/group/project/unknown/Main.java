@@ -16,6 +16,7 @@
 
 package group.project.unknown;
 
+import group.project.unknown.gamestates.*;
 import group.project.unknown.settings.*;
 import group.project.unknown.utils.*;
 
@@ -36,6 +37,8 @@ public class Main implements Runnable {
 	Thread thread;
 	/** Flag to keep track of game running status. */
 	boolean running = false;
+	/** Our GameStateManager. */
+	private GameStateManager gsm;
 
 	/**
 	 * The Main Constructor.
@@ -84,6 +87,11 @@ public class Main implements Runnable {
 		Timer timerRender = new Timer(Float.parseFloat(Registry.getSetting("fps_lock")));
 		Timer timerTick = new Timer(1F);
 
+		gsm = new GameStateManager();
+		gsm.addState(new MenuState(gsm));
+		gsm.addState(new Level1(gsm));
+		gsm.setState(0);
+
 		while (running) {
 			if (timerUpdate.updateTimer()) {
 				update();
@@ -109,6 +117,8 @@ public class Main implements Runnable {
 	 * @author João Lourenço and Hampus Backman
 	 */
 	private void update() {
+		gsm.update();
+
 		if (KeyboardFilter.isKeyDown(Keyboard.KEY_ESCAPE)) stop();
 		if (KeyboardFilter.isKeyDown(Keyboard.KEY_F11)) {
 			if (Registry.getSetting("screen_mode").equalsIgnoreCase("fullscreen")) Registry.registerSetting("screen_mode", "windowed");
@@ -128,7 +138,9 @@ public class Main implements Runnable {
 	 * 
 	 * @author João Lourenço and Hampus Backman
 	 */
-	private void tick() {}
+	private void tick() {
+		gsm.tick();
+	}
 
 	/**
 	 * Render method, called has many times has it can.
@@ -140,43 +152,17 @@ public class Main implements Runnable {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
 
 		glEnable(GL_BLEND);
-
-		glColor3f(0f, 0f, 1f);
-		glBegin(GL_TRIANGLES);
 		{
-			// Each vertice of the Quad
-			glTexCoord2f(0, 0);
-			glVertex2f(0, 0);
-
-			// Each vertice of the Quad
-			glTexCoord2f(0, 1);
-			glVertex2f(0, 100f);
-
-			// Each vertice of the Quad
-			glTexCoord2f(1, 1);
-			glVertex2f(100f, 100f);
-
-			// Each vertice of the Quad
-			glTexCoord2f(1, 1);
-			glVertex2f(100f, 100f);
-
-			// Each vertice of the Quad
-			glTexCoord2f(1, 0);
-			glVertex2f(100f, 0);
-
-			// Each vertice of the Quad
-			glTexCoord2f(0, 0);
-			glVertex2f(0, 0);
+			gsm.render();
 		}
-		glEnd();
-
 		glDisable(GL_BLEND);
 	}
 
 	/**
 	 * Java main method called by default.
 	 * 
-	 * @param args , Any kind of arguments.
+	 * @param args
+	 *            , Any kind of arguments.
 	 * @author João Lourenço and Hampus Backman
 	 */
 	public static void main(String[] args) {
