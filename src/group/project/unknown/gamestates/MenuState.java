@@ -18,6 +18,7 @@ package group.project.unknown.gamestates;
 
 import group.project.unknown.*;
 import group.project.unknown.utils.*;
+import group.project.unknown.utils.Button;
 
 import java.awt.*;
 
@@ -34,20 +35,11 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class MenuState extends GameState {
 
-	/** Texture holders. */
-	private Texture menuscreen;
-	private Texture playBtn;
+	/** Background texture. */
+	private Texture background;
 
-	/** Rectangle boxes. */
-	private Rectangle mouse;
-	private Rectangle play;
-
-	/** Proper Mouse Positions. */
-	private int mouseX;
-	private int mouseY;
-
-	/** Color of the play button. */
-	private float btnColor;
+	/** Button instances. */
+	private Button play;
 
 	/**
 	 * MenuState constructor.
@@ -66,13 +58,8 @@ public class MenuState extends GameState {
 	 * @author João Lourenço and Hampus Backman
 	 */
 	public void init() {
-		menuscreen = Loader.loadTexture("tesla.png");
-		playBtn = Loader.loadTexture("play.png");
-
-		mouse = new Rectangle(0, 0, 1, 1);
-		play = new Rectangle(Registry.getScreenWidth() - 175, Registry.getScreenHeight() - 100, 150, 75);
-
-		btnColor = 1f;
+		background = Loader.loadTexture("tesla.png");
+		play = new Button(Registry.getScreenWidth() - 175, Registry.getScreenHeight() - 100, 150, 75, "play.png");
 	}
 
 	/**
@@ -81,6 +68,7 @@ public class MenuState extends GameState {
 	 * @author João Lourenço and Hampus Backman
 	 */
 	public void tick() {
+
 	}
 
 	/**
@@ -89,18 +77,10 @@ public class MenuState extends GameState {
 	 * @author João Lourenço and Hampus Backman
 	 */
 	public void update() {
-		mouseX = Mouse.getX();
-		mouseY = Registry.getScreenHeight() - Mouse.getY();
-
-		mouse.move(mouseX, mouseY);
-
-		if (mouse.intersects(play)) {
-			btnColor = 0.7f;
-
-			if (Mouse.isButtonDown(0)) gsm.setState(1);
-		} else {
-			btnColor = 1f;
-		}
+		if (play.hover()) play.setColor(0.7f, 0.7f, 0.7f);
+		else play.setColor(1f, 1f, 1f);
+		
+		if (play.clicked()) gsm.setState(1);
 	}
 
 	/**
@@ -110,23 +90,15 @@ public class MenuState extends GameState {
 	 */
 	public void render() {
 		glColor3f(1f, 1f, 1f);
-		glBindTexture(GL_TEXTURE_2D, menuscreen.getTextureID());
+		glBindTexture(GL_TEXTURE_2D, background.getTextureID());
 		glBegin(GL_TRIANGLES);
 		{
-			RenderShape.renderRect(0, 0, Registry.getScreenWidth(), Registry.getScreenHeight(), menuscreen.getWidth(), menuscreen.getHeight());
+			RenderShape.renderRect(0, 0, Registry.getScreenWidth(), Registry.getScreenHeight(), background.getWidth(), background.getHeight());
 		}
 		glEnd();
 		glBindTexture(GL_TEXTURE_2D, 0);
 
-		glColor3f(btnColor, btnColor, btnColor);
-		glBindTexture(GL_TEXTURE_2D, playBtn.getTextureID());
-		glBegin(GL_TRIANGLES);
-		{
-			RenderShape.renderRect((int) play.getX(), (int) play.getY(), (int) play.getWidth(), (int) play.getHeight(), playBtn.getWidth(), playBtn.getHeight());
-		}
-		glEnd();
-
-		glBindTexture(GL_TEXTURE_2D, 0);
+		play.render();
 	}
 
 }

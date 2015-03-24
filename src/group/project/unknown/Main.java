@@ -91,7 +91,7 @@ public class Main implements Runnable {
 		gsm.addState(new MenuState(gsm));
 		gsm.addState(new Level1(gsm));
 		gsm.setState(0);
-
+		
 		while (running) {
 			if (timerUpdate.updateTimer()) {
 				update();
@@ -104,7 +104,7 @@ public class Main implements Runnable {
 				tick();
 				Display.setTitle("FPS: " + timerRender.getUPS() + " UPS: " + timerUpdate.getUPS() + " DELTA: " + timerUpdate.getDelta());
 			}
-
+			
 			if (Display.isCloseRequested()) this.stop();
 		}
 
