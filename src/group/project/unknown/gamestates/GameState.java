@@ -8,15 +8,11 @@ public abstract class GameState {
 	/** Inits the state. */
 	public abstract void init();
 
-	/**
-	 * Updates once per second.
-	 * 
-	 * @author João Lourenço and Hampus Backman
-	 */
+	/** Updates once per second. */
 	public abstract void tick();
 
 	/** Updates 60 times per second */
-	public abstract void update();
+	public abstract void update(float delta);
 
 	/** Updates as fast as possible, or at the set limit. */
 	public abstract void render();

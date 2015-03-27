@@ -28,7 +28,7 @@ public class Level1 extends GameState {
 	public void tick() {
 	}
 
-	public void update() {
+	public void update(float delta) {
 	}
 
 	public void render() {

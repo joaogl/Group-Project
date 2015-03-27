@@ -68,7 +68,6 @@ public class MenuState extends GameState {
 	 * @author João Lourenço and Hampus Backman
 	 */
 	public void tick() {
-
 	}
 
 	/**
@@ -76,7 +75,7 @@ public class MenuState extends GameState {
 	 * 
 	 * @author João Lourenço and Hampus Backman
 	 */
-	public void update() {
+	public void update(float delta) {
 		if (play.hover()) play.setColor(0.7f, 0.7f, 0.7f);
 		else play.setColor(1f, 1f, 1f);
 		

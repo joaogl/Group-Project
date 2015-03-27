@@ -39,6 +39,8 @@ public class Main implements Runnable {
 	boolean running = false;
 	/** Our GameStateManager. */
 	private GameStateManager gsm;
+	
+	private int fps, ups;
 
 	/**
 	 * The Main Constructor.
@@ -82,6 +84,29 @@ public class Main implements Runnable {
 			Out.print("Could not initialize LWJGL");
 			System.exit(-1);
 		}
+		
+		int targetUPS = 60;
+
+		// GameLoop constants
+		final double second = 1.0;
+		// final double second = 1000000000.0;
+		final double delta = second / targetUPS;
+		final double maxFrameSkips = 10;
+
+		double currentTime;
+		double previousTime;
+		double elapsed;
+
+		double lag = 0;
+
+		double lastUPSUpdate = 0;
+		double lastFPSUpdate = 0;
+
+		int updatesProcessed = 0;
+		int framesProcessed = 0;
+		int skippedFrames = 0;
+		
+		previousTime = TimeUtils.currentTime();
 
 		Timer timerUpdate = new Timer(60F);
 		Timer timerRender = new Timer(Float.parseFloat(Registry.getSetting("fps_lock")));
@@ -93,21 +118,54 @@ public class Main implements Runnable {
 		gsm.setState(0);
 		
 		while (running) {
-			if (timerUpdate.updateTimer()) {
-				update();
+			currentTime = TimeUtils.currentTime();
+			elapsed = currentTime - previousTime;
+
+			lag += elapsed;
+
+			// The update loop, update constantly to meet the target UPS while skipping frames
+			while (lag > delta && skippedFrames < maxFrameSkips) {
+				update((float) delta);
+				// gameState.update((float) frameTime);
+
+				lag -= delta;
+				skippedFrames++;
+
+				// Calculate the UPS counters
+				updatesProcessed++;
+
+				if (currentTime - lastUPSUpdate >= second) {
+					ups = updatesProcessed;
+					updatesProcessed = 0;
+					lastUPSUpdate = currentTime;
+				}
 			}
-			if (timerRender.updateTimer()) {
-				render();
-				Display.update();
-			}
-			if (timerTick.updateTimer()) {
+
+			// The simplest way to calculate the interpolation
+			float lagOffset = (float) (lag / delta);
+
+			render(/* lagOffset, batcher */);
+			// gameState.render(lagOffset, batcher);
+
+			// Calculate the FPS counters
+			framesProcessed++;
+
+			if (currentTime - lastFPSUpdate >= second) {
+				fps = framesProcessed;
+				Display.setTitle("FPS: " + fps + " UPS: " + ups + " DELTA: " + ((float) delta));
 				tick();
-				Display.setTitle("FPS: " + timerRender.getUPS() + " UPS: " + timerUpdate.getUPS() + " DELTA: " + timerUpdate.getDelta());
+				framesProcessed = 0;
+				lastFPSUpdate = currentTime;
 			}
-			
+
+			// Swap the buffers and update the game
+			Display.update();
+
+			skippedFrames = 0;
+			previousTime = currentTime;
+
 			if (Display.isCloseRequested()) this.stop();
 		}
-
 		cleanUp();
 	}
 
@@ -116,8 +174,8 @@ public class Main implements Runnable {
 	 * 
 	 * @author João Lourenço and Hampus Backman
 	 */
-	private void update() {
-		gsm.update();
+	private void update(float delta) {
+		gsm.update(delta);
 
 		if (KeyboardFilter.isKeyDown(Keyboard.KEY_ESCAPE)) stop();
 		if (KeyboardFilter.isKeyDown(Keyboard.KEY_F11)) {

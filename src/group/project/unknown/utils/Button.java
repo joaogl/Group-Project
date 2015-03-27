@@ -122,5 +122,5 @@ public class Button {
 		this.g = g;
 		this.b = b;
 	}
-
+	
 }

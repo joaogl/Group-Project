@@ -55,8 +55,8 @@ public class GameStateManager {
 	 * 
 	 * @author João Lourenço and Hampus Backman
 	 */
-	public void update() {
-		gameStates.get(currentState).update();
+	public void update(float delta) {
+		gameStates.get(currentState).update(delta);
 	}
 
 	/**
