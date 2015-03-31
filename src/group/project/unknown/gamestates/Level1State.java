@@ -16,54 +16,41 @@
 
 package group.project.unknown.gamestates;
 
-import group.project.unknown.*;
-import group.project.unknown.utils.*;
-import group.project.unknown.utils.Button;
-
-import java.awt.*;
-
-import org.lwjgl.input.*;
-import org.newdawn.slick.opengl.*;
-
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.*;
 
-/**
- * The MenuState, where the main menu will be.
- * 
- * @author João Lourenço and Hampus Backman
- *
- */
-public class MenuState extends GameState {
+import group.project.unknown.utils.*;
 
-	/** Background texture. */
-	private Texture background;
+import java.io.*;
 
-	/** Button instances. */
-	private Button play;
+public class Level1State extends GameState {
+
+	/** ShaderProgram holder. */
+	private ShaderProgram shaderprogram;
 
 	/**
-	 * MenuState constructor.
+	 * The Level1State constructor.
 	 * 
 	 * @param gsm
 	 *            , Instance of GameStateManager.
 	 * @author João Lourenço and Hampus Backman
 	 */
-	public MenuState(GameStateManager gsm) {
+	public Level1State(GameStateManager gsm) {
 		this.gsm = gsm;
 	}
 
 	/**
-	 * Inits the GameState.
+	 * Inits the Level1State.
 	 * 
 	 * @author João Lourenço and Hampus Backman
 	 */
 	public void init() {
-		background = Loader.loadTexture("tesla.png");
-		play = new Button(Registry.getScreenWidth() - 175, Registry.getScreenHeight() - 100, 150, 75, "play.png");
+		shaderprogram = new ShaderProgram("res/shaders/shader.vert", "res/shaders/shader.frag");
+		shaderprogram.attach();
 	}
 
 	/**
-	 * Ticks the GameState.
+	 * Ticks the Level1State.
 	 * 
 	 * @author João Lourenço and Hampus Backman
 	 */
@@ -71,41 +58,37 @@ public class MenuState extends GameState {
 	}
 
 	/**
-	 * Updates the GameState.
+	 * Updates the Level1State.
 	 * 
 	 * @author João Lourenço and Hampus Backman
 	 */
 	public void update(float delta) {
-		if (play.hover()) play.setColor(0.7f, 0.7f, 0.7f);
-		else play.setColor(1f, 1f, 1f);
-
-		if (play.clicked()) gsm.setState(1);
 	}
 
 	/**
-	 * Renders the GameState.
+	 * Renders the Level1State.
 	 * 
 	 * @author João Lourenço and Hampus Backman
 	 */
 	public void render() {
-		glColor3f(1f, 1f, 1f);
-		glBindTexture(GL_TEXTURE_2D, background.getTextureID());
+		shaderprogram.useProgram(true);
+
 		glBegin(GL_TRIANGLES);
 		{
-			RenderShape.renderRect(0, 0, Registry.getScreenWidth(), Registry.getScreenHeight(), background.getWidth(), background.getHeight());
+			RenderShape.renderRect(50, 50, 100, 100, 1, 1);
 		}
 		glEnd();
-		glBindTexture(GL_TEXTURE_2D, 0);
 
-		play.render();
+		shaderprogram.useProgram(false);
 	}
 
 	/**
-	 * Cleans everything up.
+	 * Cleans up everything in Level1State.
 	 * 
 	 * @author João Lourenço and Hampus Backman
 	 */
 	public void cleanUp() {
+		shaderprogram.deleteShaders();
 	}
 
 }

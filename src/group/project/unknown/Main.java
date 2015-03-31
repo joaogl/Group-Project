@@ -87,9 +87,7 @@ public class Main implements Runnable {
 		
 		int targetUPS = 60;
 
-		// GameLoop constants
 		final double second = 1.0;
-		// final double second = 1000000000.0;
 		final double delta = second / targetUPS;
 		final double maxFrameSkips = 10;
 
@@ -107,14 +105,10 @@ public class Main implements Runnable {
 		int skippedFrames = 0;
 		
 		previousTime = TimeUtils.currentTime();
-
-		Timer timerUpdate = new Timer(60F);
-		Timer timerRender = new Timer(Float.parseFloat(Registry.getSetting("fps_lock")));
-		Timer timerTick = new Timer(1F);
-
+		
 		gsm = new GameStateManager();
 		gsm.addState(new MenuState(gsm));
-		gsm.addState(new Level1(gsm));
+		gsm.addState(new Level1State(gsm));
 		gsm.setState(0);
 		
 		while (running) {
@@ -122,16 +116,13 @@ public class Main implements Runnable {
 			elapsed = currentTime - previousTime;
 
 			lag += elapsed;
-
-			// The update loop, update constantly to meet the target UPS while skipping frames
+			
 			while (lag > delta && skippedFrames < maxFrameSkips) {
 				update((float) delta);
-				// gameState.update((float) frameTime);
-
+				
 				lag -= delta;
 				skippedFrames++;
-
-				// Calculate the UPS counters
+				
 				updatesProcessed++;
 
 				if (currentTime - lastUPSUpdate >= second) {
@@ -140,15 +131,9 @@ public class Main implements Runnable {
 					lastUPSUpdate = currentTime;
 				}
 			}
-
-			// The simplest way to calculate the interpolation
-			float lagOffset = (float) (lag / delta);
-
-			render(/* lagOffset, batcher */);
-			// gameState.render(lagOffset, batcher);
-
-			// Calculate the FPS counters
+			
 			framesProcessed++;
+			render();
 
 			if (currentTime - lastFPSUpdate >= second) {
 				fps = framesProcessed;
@@ -158,7 +143,6 @@ public class Main implements Runnable {
 				lastFPSUpdate = currentTime;
 			}
 
-			// Swap the buffers and update the game
 			Display.update();
 
 			skippedFrames = 0;

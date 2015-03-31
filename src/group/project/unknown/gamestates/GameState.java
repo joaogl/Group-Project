@@ -17,4 +17,7 @@ public abstract class GameState {
 	/** Updates as fast as possible, or at the set limit. */
 	public abstract void render();
 
+	/** Cleans up gamestate. */
+	public abstract void cleanUp();
+
 }

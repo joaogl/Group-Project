@@ -68,4 +68,14 @@ public class GameStateManager {
 		gameStates.get(currentState).render();
 	}
 
+	/**
+	 * Cleans upp everything.
+	 * 
+	 * @author João Lourenço and Hampus Backman
+	 */
+	public void cleanUp() {
+		for (GameState gst : gameStates)
+			gst.cleanUp();
+	}
+
 }
