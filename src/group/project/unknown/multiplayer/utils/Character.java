@@ -14,41 +14,16 @@
  * limitations under the License.
  */
 
-package group.project.unknown.utils;
-
-import java.io.*;
-
-import org.lwjgl.opengl.*;
-import org.newdawn.slick.opengl.*;
-import org.newdawn.slick.util.*;
+package group.project.unknown.multiplayer.utils;
 
 /**
- * Loader class.
- * 
  * @author João Lourenço and Hampus Backman
  *
  */
-public class Loader {
+public class Character {
 
-	/**
-	 * Texture Loader function.
-	 * 
-	 * @param url
-	 *            , Location of image to load.
-	 * @return
-	 * @author João Lourenço and Hampus Backman
-	 */
-	public static Texture loadTexture(String url) {
-		Texture texture = null;
-		try {
-			texture = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream(url));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		texture.setTextureFilter(GL11.GL_NEAREST);
-		
-		return texture;
-	}
+	public String name;
+	public String otherStuff;
+	public int id, x, y;
 
 }

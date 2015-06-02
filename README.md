@@ -1,6 +1,9 @@
 # Group-Project
 
 ### TODO:
-- Fix Render limit
-- Make Level
 - Fix Proper shaders
+- Fix texture flickering when using glTransform
+
+### CONTROLS
+- WASD For movement
+- Arrow keys to shoot particles

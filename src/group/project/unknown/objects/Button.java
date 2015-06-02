@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package group.project.unknown.utils;
+package group.project.unknown.objects;
 
 import group.project.unknown.*;
+import group.project.unknown.utils.*;
 
 import java.awt.*;
 
@@ -63,7 +64,7 @@ public class Button {
 		this.mouseRect = new Rectangle(0, 0, 1, 1);
 		this.rect = new Rectangle(x, y, w, h);
 
-		this.tex = Loader.loadTexture(texUrl);
+		this.tex = TexLoader.loadTexture(texUrl);
 	}
 
 	/**
@@ -72,6 +73,7 @@ public class Button {
 	 * @return
 	 * @author João Lourenço and Hampus Backman
 	 */
+	@SuppressWarnings("deprecation")
 	public boolean hover() {
 		mouseRect.move(Mouse.getX(), Registry.getScreenHeight() - Mouse.getY());
 		if (rect.intersects(mouseRect)) return true;
@@ -96,13 +98,13 @@ public class Button {
 	 */
 	public void render() {
 		glColor3f(r, g, b);
+		
 		glBindTexture(GL_TEXTURE_2D, tex.getTextureID());
 		glBegin(GL_TRIANGLES);
 		{
 			RenderShape.renderRect((int) rect.getX(), (int) rect.getY(), (int) rect.getWidth(), (int) rect.getHeight(), tex.getWidth(), tex.getHeight());
 		}
 		glEnd();
-
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 

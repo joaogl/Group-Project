@@ -17,6 +17,7 @@
 package group.project.unknown;
 
 import group.project.unknown.gamestates.*;
+import group.project.unknown.level.*;
 import group.project.unknown.settings.*;
 import group.project.unknown.utils.*;
 
@@ -39,7 +40,7 @@ public class Main implements Runnable {
 	boolean running = false;
 	/** Our GameStateManager. */
 	private GameStateManager gsm;
-	
+
 	private int fps, ups;
 
 	/**
@@ -77,6 +78,13 @@ public class Main implements Runnable {
 	 * @author João Lourenço and Hampus Backman
 	 */
 	public void run() {
+		Out.print("os.name == " + System.getProperty("os.name"));
+		Out.print("os.version == " + System.getProperty("os.version"));
+		Out.print("os.arch == " + System.getProperty("os.arch"));
+		Out.print("java.version == " + System.getProperty("java.version"));
+		Out.print("java.vendor == " + System.getProperty("java.vendor"));
+		Out.print("sun.arch.data.model == " + System.getProperty("sun.arch.data.model"));
+		
 		Settings.loadSettings();
 		try {
 			init();
@@ -84,7 +92,7 @@ public class Main implements Runnable {
 			Out.print("Could not initialize LWJGL");
 			System.exit(-1);
 		}
-		
+
 		int targetUPS = 60;
 
 		final double second = 1.0;
@@ -103,26 +111,26 @@ public class Main implements Runnable {
 		int updatesProcessed = 0;
 		int framesProcessed = 0;
 		int skippedFrames = 0;
-		
+
 		previousTime = TimeUtils.currentTime();
 		
 		gsm = new GameStateManager();
 		gsm.addState(new MenuState(gsm));
-		gsm.addState(new Level1State(gsm));
-		gsm.setState(0);
-		
+		gsm.addState(new Level1(gsm));
+		gsm.setState(1);
+
 		while (running) {
 			currentTime = TimeUtils.currentTime();
 			elapsed = currentTime - previousTime;
 
 			lag += elapsed;
-			
+
 			while (lag > delta && skippedFrames < maxFrameSkips) {
 				update((float) delta);
-				
+
 				lag -= delta;
 				skippedFrames++;
-				
+
 				updatesProcessed++;
 
 				if (currentTime - lastUPSUpdate >= second) {
@@ -131,7 +139,7 @@ public class Main implements Runnable {
 					lastUPSUpdate = currentTime;
 				}
 			}
-			
+
 			framesProcessed++;
 			render();
 
@@ -149,7 +157,10 @@ public class Main implements Runnable {
 			previousTime = currentTime;
 
 			if (Display.isCloseRequested()) this.stop();
+
+			Display.sync(Integer.parseInt(Registry.getSetting("fps_lock")));
 		}
+
 		cleanUp();
 	}
 
@@ -169,6 +180,7 @@ public class Main implements Runnable {
 			Display.destroy();
 			try {
 				init();
+				gsm.init();
 			} catch (LWJGLException e) {
 				e.printStackTrace();
 			}
@@ -190,7 +202,7 @@ public class Main implements Runnable {
 	 * @author João Lourenço and Hampus Backman
 	 */
 	private void render() {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
 
 		glEnable(GL_BLEND);
@@ -249,6 +261,7 @@ public class Main implements Runnable {
 		Display.setFullscreen(full);
 		Display.setTitle("");
 		Display.setResizable(false);
+		Display.setSwapInterval(0);
 
 		Display.create(new PixelFormat(0, 16, 1));
 

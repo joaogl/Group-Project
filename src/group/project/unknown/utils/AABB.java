@@ -16,28 +16,37 @@
 
 package group.project.unknown.utils;
 
-import static org.lwjgl.opengl.GL11.*;
-
-public class RenderShape {
+public class AABB {
 	
-	public static void renderRect(int x, int y, int w, int h, float texX, float texY) {
-		glTexCoord2f(0, 0);
-		glVertex2f(x, 		y);
-
-		glTexCoord2f(0, texY);
-		glVertex2f(x, 		y + h);
-
-		glTexCoord2f(texX, texY);
-		glVertex2f(x + w, 	y + h);
-
-		glTexCoord2f(texX, texY);
-		glVertex2f(x + w, 	y + h);
-
-		glTexCoord2f(texX, 0);
-		glVertex2f(x + w,	y);
-
-		glTexCoord2f(0, 0);
-		glVertex2f(x, 		y);
+	public float x0, x1;
+	public float y0, y1;
+	
+	public float width, height;
+	
+	public AABB(float x0, float y0, float width, float height) {
+		this.x0 = x0;
+		this.x1 = x0 + width;
+		this.y0 = y0;
+		this.y1 = y0 + height;
+		
+		this.width = width;
+		this.height = height;
 	}
+	
+    public boolean intersects(AABB b) {
+    	if (x0 + width/2 	> b.x0 &&
+    		x0 - width/2 	< b.x1 &&
+    		y0 + height/2	> b.y0 &&
+    		y0 - height/2	< b.y1) return true;
+    	
+    	return false;
+    }
+    
+    public void move(float x, float y) {
+    	x0 = x;
+    	y0 = y;
+    	x1 = x + width;
+    	y1 = y + height;
+    }
 	
 }

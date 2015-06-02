@@ -17,10 +17,8 @@
 package group.project.unknown.gamestates;
 
 import group.project.unknown.*;
+import group.project.unknown.objects.*;
 import group.project.unknown.utils.*;
-import group.project.unknown.utils.Button;
-
-import java.awt.*;
 
 import org.lwjgl.input.*;
 import org.newdawn.slick.opengl.*;
@@ -58,7 +56,7 @@ public class MenuState extends GameState {
 	 * @author João Lourenço and Hampus Backman
 	 */
 	public void init() {
-		background = Loader.loadTexture("tesla.png");
+		background = TexLoader.loadTexture("tesla.png");
 		play = new Button(Registry.getScreenWidth() - 175, Registry.getScreenHeight() - 100, 150, 75, "play.png");
 	}
 
@@ -80,6 +78,8 @@ public class MenuState extends GameState {
 		else play.setColor(1f, 1f, 1f);
 
 		if (play.clicked()) gsm.setState(1);
+		
+		if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) gsm.setState(1);
 	}
 
 	/**

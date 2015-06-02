@@ -77,5 +77,9 @@ public class GameStateManager {
 		for (GameState gst : gameStates)
 			gst.cleanUp();
 	}
+	
+	public void init() {
+		gameStates.get(currentState).init();
+	}
 
 }

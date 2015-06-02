@@ -16,12 +16,12 @@
 
 package group.project.unknown.utils;
 
+import java.io.*;
+
+import org.lwjgl.util.vector.*;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
-
-import group.project.unknown.gamestates.*;
-
-import java.io.*;
 
 public class ShaderProgram {
 
@@ -54,6 +54,7 @@ public class ShaderProgram {
 	 * 
 	 * @author João Lourenço and Hampus Backman
 	 */
+	@SuppressWarnings("deprecation")
 	private void init() {
 		StringBuilder vertexShaderSource = new StringBuilder();
 		StringBuilder fragmentShaderSource = new StringBuilder();
@@ -64,6 +65,7 @@ public class ShaderProgram {
 			while ((line = reader.readLine()) != null) {
 				vertexShaderSource.append(line).append('\n');
 			}
+			reader.close();
 		} catch (IOException e) {
 			System.err.println("Could not load Vertex Shader!");
 		}
@@ -74,6 +76,7 @@ public class ShaderProgram {
 			while ((line = reader.readLine()) != null) {
 				fragmentShaderSource.append(line).append('\n');
 			}
+			reader.close();
 		} catch (IOException e) {
 			System.err.println("Could not load Fragment Shader!");
 		}
@@ -125,5 +128,16 @@ public class ShaderProgram {
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
 	}
+
+	/**
+	 * Getter for shaderProgram.
+	 * 
+	 * @return
+	 * @author João Lourenço and Hampus Backman
+	 */
+	public int getProgram() {
+		return shaderProgram;
+	}
+
 
 }

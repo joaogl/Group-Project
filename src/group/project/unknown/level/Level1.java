@@ -14,39 +14,28 @@
  * limitations under the License.
  */
 
-package group.project.unknown.gamestates;
+package group.project.unknown.level;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
-
+import group.project.unknown.*;
+import group.project.unknown.gamestates.*;
+import group.project.unknown.level.entities.*;
+import group.project.unknown.render.*;
 import group.project.unknown.utils.*;
 
-import java.io.*;
+import org.lwjgl.opengl.*;
+import org.lwjgl.util.vector.*;
 
-public class Level1State extends GameState {
+public class Level1 extends GameState {
 
-	/** ShaderProgram holder. */
-	private ShaderProgram shaderprogram;
+	public Level level;
 
-	/**
-	 * The Level1State constructor.
-	 * 
-	 * @param gsm
-	 *            , Instance of GameStateManager.
-	 * @author João Lourenço and Hampus Backman
-	 */
-	public Level1State(GameStateManager gsm) {
+	public Level1(GameStateManager gsm) {
 		this.gsm = gsm;
 	}
 
-	/**
-	 * Inits the Level1State.
-	 * 
-	 * @author João Lourenço and Hampus Backman
-	 */
 	public void init() {
-		shaderprogram = new ShaderProgram("res/shaders/shader.vert", "res/shaders/shader.frag");
-		shaderprogram.attach();
+		level = new Level("level1");
+		level.init();
 	}
 
 	/**
@@ -55,6 +44,7 @@ public class Level1State extends GameState {
 	 * @author João Lourenço and Hampus Backman
 	 */
 	public void tick() {
+		level.tick();
 	}
 
 	/**
@@ -63,6 +53,7 @@ public class Level1State extends GameState {
 	 * @author João Lourenço and Hampus Backman
 	 */
 	public void update(float delta) {
+		level.update(delta);
 	}
 
 	/**
@@ -71,15 +62,7 @@ public class Level1State extends GameState {
 	 * @author João Lourenço and Hampus Backman
 	 */
 	public void render() {
-		shaderprogram.useProgram(true);
-
-		glBegin(GL_TRIANGLES);
-		{
-			RenderShape.renderRect(50, 50, 100, 100, 1, 1);
-		}
-		glEnd();
-
-		shaderprogram.useProgram(false);
+		level.render();
 	}
 
 	/**
@@ -88,7 +71,7 @@ public class Level1State extends GameState {
 	 * @author João Lourenço and Hampus Backman
 	 */
 	public void cleanUp() {
-		shaderprogram.deleteShaders();
+		level.cleanUp();
 	}
 
 }
