@@ -16,14 +16,7 @@
 
 package group.project.unknown.level;
 
-import group.project.unknown.*;
 import group.project.unknown.gamestates.*;
-import group.project.unknown.level.entities.*;
-import group.project.unknown.render.*;
-import group.project.unknown.utils.*;
-
-import org.lwjgl.opengl.*;
-import org.lwjgl.util.vector.*;
 
 public class Level1 extends GameState {
 

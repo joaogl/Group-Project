@@ -197,7 +197,7 @@ public class Main implements Runnable {
 	}
 
 	/**
-	 * Render method, called has many times has it can.
+	 * Render method, called as many times has it can.
 	 * 
 	 * @author João Lourenço and Hampus Backman
 	 */
@@ -268,7 +268,7 @@ public class Main implements Runnable {
 		// Setting up all the Projections stuff for OpenGL
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glOrtho(0, Registry.getScreenWidth(), Registry.getScreenHeight(), 0, 1, -1);
+		glOrtho(0, Registry.getScreenWidth(), Registry.getScreenHeight(), 0, 1000, -1);
 		glMatrixMode(GL_MODELVIEW);
 
 		glEnable(GL_TEXTURE_2D);

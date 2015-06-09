@@ -28,13 +28,14 @@ import org.lwjgl.util.vector.*;
 public class LevelLoader {
 
 	private RenderManager rm;
-	private int width;
-	private int height;
+	public int width;
+	public int height;
 
 	/** Array of tiles. */
-	private byte[][] tiles;
-	private int tilesize;
+	public byte[][] tiles;
+	public int tilesize;
 	
+	public HashMap<Integer, byte[][]> tilesList = new HashMap<Integer, byte[][]>();
 	public List<AABB> collision = new ArrayList<AABB>();
 
 	/**
@@ -106,7 +107,8 @@ public class LevelLoader {
 				}
 			}
 
-			rm.flush(layer);
+			tilesList.put(layer, tiles);
+			rm.flush(layer, true, Spritesheet.tiles);
 		} catch (Exception e) {
 			Out.print("Could not find map file, generating new!");
 			generate();

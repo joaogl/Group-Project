@@ -16,8 +16,6 @@
 
 package group.project.unknown.level.entities;
 
-import group.project.unknown.gamestates.*;
-
 import group.project.unknown.level.*;
 import group.project.unknown.utils.*;
 
@@ -32,6 +30,8 @@ public abstract class Entity {
 	protected float height;
 	protected float cwidth;
 	protected float cheight;
+	
+	public boolean remove;
 	
 	protected AABB aabb;
 	

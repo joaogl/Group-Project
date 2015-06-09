@@ -23,7 +23,7 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.*;
 
 public class Particle extends Entity {
-
+	
 	private float speed;
 	private float angle;
 
@@ -31,8 +31,9 @@ public class Particle extends Entity {
 	private float life;
 
 	private Vector3f color;
-
-	public boolean remove = false;
+	
+	private boolean hitXwall = false;
+	private boolean hitYwall = false;
 
 	public Particle(Level level, Vector2f position, Vector3f color, float speed, float life, float angle) {
 		super(level, position);
@@ -49,6 +50,8 @@ public class Particle extends Entity {
 	public void init() {
 		cwidth = 5;
 		cheight = 5;
+		
+		remove = false;
 
 		aabb = new AABB(position.x, position.y, cwidth, cheight);
 	}
@@ -67,13 +70,15 @@ public class Particle extends Entity {
 			tempPos.x += Math.sin(Math.toRadians(this.angle)) * speed * delta;
 			tempPos.y += Math.cos(Math.toRadians(this.angle)) * speed * delta;
 
-			if (!xCollision(tempPos.x)) position.x = tempPos.x;
+			if (!xCollision(tempPos.x) && !hitXwall) position.x = tempPos.x;
 			else {
+				hitXwall = true;
 				if (speed > 0) speed -= speed * 1.5 * delta;
 			}
-
-			if (!yCollision(tempPos.y)) position.y = tempPos.y;
+			
+			if (!yCollision(tempPos.y) && !hitYwall) position.y = tempPos.y;
 			else {
+				hitYwall = true;
 				if (speed > 0) speed -= speed * 1.5 * delta;
 			}
 

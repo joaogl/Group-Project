@@ -16,12 +16,14 @@
 
 package group.project.unknown.render;
 
+import group.project.unknown.level.*;
 import group.project.unknown.utils.*;
 
 import java.util.*;
 
-import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.*;
+
+import static org.lwjgl.opengl.GL11.*;
 
 public class RenderManager {
 
@@ -93,21 +95,23 @@ public class RenderManager {
 	 * @param layer
 	 * @author João Lourenço and Hampus Backman
 	 */
-	public void flush(int layer) {
+	public void flush(int layer, boolean useTextures, Spritesheet spritesheet) {
 		int displayL = layer;
-		displayL = GL11.glGenLists(1);
-		GL11.glNewList(displayL, GL11.GL_COMPILE);
-		GL11.glBegin(MODE);
+		displayL = glGenLists(1);
+		glNewList(displayL, GL_COMPILE);
+		if (useTextures) spritesheet.bind();
+		glBegin(MODE);
 		for (int j = 0; j < vertices.size(); j++) {
 			try {
-				GL11.glColor3f(colors.get(j).getX(), colors.get(j).getY(), colors.get(j).getZ());
-				GL11.glTexCoord2f(textureCoords.get(j).getX(), textureCoords.get(j).getY());
+				glColor3f(colors.get(j).getX(), colors.get(j).getY(), colors.get(j).getZ());
+				glTexCoord2f(textureCoords.get(j).getX(), textureCoords.get(j).getY());
 			} catch (IndexOutOfBoundsException e) {
 			}
-			GL11.glVertex2f(vertices.get(j).getX(), vertices.get(j).getY());
+			glVertex2f(vertices.get(j).getX(), vertices.get(j).getY());
 		}
-		GL11.glEnd();
-		GL11.glEndList();
+		glEnd();
+		if (useTextures) spritesheet.unbind();
+		glEndList();
 
 		displayLists.put(layer, displayL);
 
@@ -128,7 +132,7 @@ public class RenderManager {
 
 		while (iterator.hasNext()) {
 			mentry = (Map.Entry) iterator.next();
-			GL11.glCallList((int) mentry.getValue());
+			glCallList((int) mentry.getValue());
 		}
 	}
 
@@ -138,10 +142,14 @@ public class RenderManager {
 		sh.useProgram(false);
 	}
 
-	public void renderLayer(int layer, boolean useShaders) {
+	public void render(int layer, boolean useShaders) {
 		sh.useProgram(useShaders);
-		GL11.glCallList(displayLists.get(layer));
+		glCallList(displayLists.get(layer));
 		sh.useProgram(false);
+	}
+
+	public void render(int layer) {
+		glCallList(displayLists.get(layer));
 	}
 
 }

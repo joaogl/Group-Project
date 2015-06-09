@@ -16,10 +16,10 @@
 
 package group.project.unknown.level;
 
+import group.project.unknown.utils.*;
+
 import org.lwjgl.opengl.*;
 import org.newdawn.slick.opengl.*;
-
-import group.project.unknown.utils.*;
 
 public class Spritesheet {
 	

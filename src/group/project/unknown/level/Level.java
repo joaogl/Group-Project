@@ -16,17 +16,22 @@
 
 package group.project.unknown.level;
 
-import org.lwjgl.opengl.*;
-import org.lwjgl.util.vector.*;
-
 import group.project.unknown.*;
 import group.project.unknown.level.entities.*;
 import group.project.unknown.render.*;
 import group.project.unknown.utils.*;
 
+import java.util.*;
+
+import org.lwjgl.opengl.*;
+import org.lwjgl.util.vector.*;
+
+import static org.lwjgl.opengl.GL11.*;
+
 public class Level {
-	
+
 	private ShaderProgram levelShader;
+	private ShaderProgram lightShader;
 	public RenderManager rm;
 	public LevelLoader ll;
 
@@ -34,6 +39,8 @@ public class Level {
 	private Player player;
 
 	private String levelName;
+
+	private ArrayList<Light> lights = new ArrayList<Light>();
 
 	public Level(String levelName) {
 		this.levelName = levelName;
@@ -43,11 +50,18 @@ public class Level {
 		levelShader = new ShaderProgram("res/shaders/level.vert", "res/shaders/level.frag");
 		levelShader.attach();
 
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		lightShader = new ShaderProgram("res/shaders/light.frag", ShaderProgram.FRAG);
+		lightShader.attach();
+
+		glEnable(GL_TEXTURE_2D);
 
 		rm = new RenderManager(GL11.GL_QUADS, levelShader);
 		ll = new LevelLoader(rm);
-		ll.load("res/levels/" + levelName + ".map", 0, true);
+		ll.load("res/levels/" + levelName + ".map", -1, true);
+		ll.load("res/levels/" + levelName + "_roof.map", 1, false);
+
+		lights.add(new Light(500, 850, 50, 1.0f, 0.5f, 0.5f));
+		lights.add(new Light(900, 850, 50, 0.0f, 0.0f, 1f));
 
 		spawner = new Spawner(this);
 
@@ -66,22 +80,40 @@ public class Level {
 	}
 
 	public void render() {
-		GL11.glTranslated(Registry.getScreenWidth() / 2 - (double) player.getX(), Registry.getScreenHeight() / 2 - (double) player.getY(), 0);
-
-		Spritesheet.tiles.bind();
+		glTranslatef(Registry.getScreenWidth() / 2 - (float) player.getX(), Registry.getScreenHeight() / 2 - (float) player.getY(), 0);
 		{
-			rm.renderLayer(0, false);
-		}
-		Spritesheet.tiles.unbind();
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_ONE, GL_ONE);
 
-		spawner.render();
-		{
-			levelShader.useProgram(true);
+			rm.render(-1, true);
+
+			lightShader.useProgram(true);
+			for (Light light : lights) {
+				glColorMask(true, true, true, true);
+
+				lightShader.setUniform2f("lightPosition", light.position.x - player.getX(), Registry.getScreenHeight() - (light.position.y - player.getY()));
+				lightShader.setUniform3f("lightColor", light.red, light.green, light.blue);
+				lightShader.setUniform1f("size", light.size);
+
+				glBegin(GL_QUADS);
+				{
+					glColor3f(0, 0, 0);
+					glVertex2f(0, 0);
+					glVertex2f(ll.width*ll.tilesize, 0);
+					glVertex2f(ll.width*ll.tilesize, ll.height*ll.tilesize);
+					glVertex2f(0, ll.height*ll.tilesize);
+				}
+				glEnd();
+			}
+			glDisable(GL_BLEND);
+			lightShader.useProgram(false);
+
+			spawner.render();
 			player.render();
-			levelShader.useProgram(false);
-		}
 
-		GL11.glTranslated(-(Registry.getScreenWidth() / 2 - (double) player.getX()), -(Registry.getScreenHeight() / 2 - (double) player.getY()), 0);
+			rm.render(1, true);
+		}
+		glTranslatef(-(Registry.getScreenWidth() / 2 - (float) player.getX()), -(Registry.getScreenHeight() / 2 - (float) player.getY()), 0);
 	}
 
 	public void cleanUp() {

@@ -1,24 +1,6 @@
-/*
- * Copyright 2014 João Lourenço and Hampus Backman.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package group.project.unknown.utils;
 
 import java.io.*;
-
-import org.lwjgl.util.vector.*;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -33,6 +15,12 @@ public class ShaderProgram {
 	private String vert;
 	private String frag;
 
+	private boolean useVert = false;
+	private boolean useFrag = false;
+
+	public static int VERT = 1;
+	public static int FRAG = 2;
+
 	/**
 	 * ShaderProgram constructor.
 	 * 
@@ -46,7 +34,21 @@ public class ShaderProgram {
 		this.vert = vert;
 		this.frag = frag;
 
+		useVert = true;
+		useFrag = true;
+
 		init();
+	}
+
+	public ShaderProgram(String VertOrFrag, int type) {
+		if (type == ShaderProgram.VERT) useVert = true;
+		if (type == ShaderProgram.FRAG) useFrag = true;
+		
+		this.vert = VertOrFrag;
+		this.frag = VertOrFrag;
+		
+		init();
+		
 	}
 
 	/**
@@ -59,38 +61,44 @@ public class ShaderProgram {
 		StringBuilder vertexShaderSource = new StringBuilder();
 		StringBuilder fragmentShaderSource = new StringBuilder();
 
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(vert));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				vertexShaderSource.append(line).append('\n');
+		if (useVert) {
+			try {
+				BufferedReader reader = new BufferedReader(new FileReader(vert));
+				String line;
+				while ((line = reader.readLine()) != null) {
+					vertexShaderSource.append(line).append('\n');
+				}
+				reader.close();
+			} catch (IOException e) {
+				useVert = false;
+				System.err.println("Could not load Vertex Shader! " + vert);
 			}
-			reader.close();
-		} catch (IOException e) {
-			System.err.println("Could not load Vertex Shader!");
-		}
 
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(frag));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				fragmentShaderSource.append(line).append('\n');
+			glShaderSource(vertexShader, vertexShaderSource);
+			glCompileShader(vertexShader);
+			if (glGetShader(vertexShader, GL_COMPILE_STATUS) == GL_FALSE) {
+				System.err.println("Vertex shader wasn't able to be compiled.");
 			}
-			reader.close();
-		} catch (IOException e) {
-			System.err.println("Could not load Fragment Shader!");
 		}
 
-		glShaderSource(vertexShader, vertexShaderSource);
-		glCompileShader(vertexShader);
-		if (glGetShader(vertexShader, GL_COMPILE_STATUS) == GL_FALSE) {
-			System.err.println("Vertex shader wasn't able to be compiled.");
-		}
+		if (useFrag) {
+			try {
+				BufferedReader reader = new BufferedReader(new FileReader(frag));
+				String line;
+				while ((line = reader.readLine()) != null) {
+					fragmentShaderSource.append(line).append('\n');
+				}
+				reader.close();
+			} catch (IOException e) {
+				useFrag = false;
+				System.err.println("Could not load Fragment Shader! " + frag);
+			}
 
-		glShaderSource(fragmentShader, fragmentShaderSource);
-		glCompileShader(fragmentShader);
-		if (glGetShader(fragmentShader, GL_COMPILE_STATUS) == GL_FALSE) {
-			System.err.println("Fragment shader wasn't able to be compiled.");
+			glShaderSource(fragmentShader, fragmentShaderSource);
+			glCompileShader(fragmentShader);
+			if (glGetShader(fragmentShader, GL_COMPILE_STATUS) == GL_FALSE) {
+				System.err.println("Fragment shader wasn't able to be compiled.");
+			}
 		}
 	}
 
@@ -100,10 +108,22 @@ public class ShaderProgram {
 	 * @author João Lourenço and Hampus Backman
 	 */
 	public void attach() {
-		glAttachShader(shaderProgram, vertexShader);
-		glAttachShader(shaderProgram, fragmentShader);
+		if (useVert) glAttachShader(shaderProgram, vertexShader);
+		if (useFrag) glAttachShader(shaderProgram, fragmentShader);
 		glLinkProgram(shaderProgram);
 		glValidateProgram(shaderProgram);
+	}
+
+	public void setUniform3f(String name, float x, float y, float z) {
+		glUniform3f(glGetUniformLocation(this.getProgram(), name), x, y, z);
+	}
+	
+	public void setUniform2f(String name, float x, float y) {
+		glUniform2f(glGetUniformLocation(this.getProgram(), name), x, y);
+	}
+	
+	public void setUniform1f(String name, float x) {
+		glUniform1f(glGetUniformLocation(this.getProgram(), name), x);
 	}
 
 	/**
@@ -138,6 +158,5 @@ public class ShaderProgram {
 	public int getProgram() {
 		return shaderProgram;
 	}
-
 
 }

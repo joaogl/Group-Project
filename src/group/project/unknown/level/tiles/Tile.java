@@ -24,12 +24,28 @@ import group.project.unknown.render.*;
 public abstract class Tile {
 
 	public static Tile stone = new StoneTile();
-	public static Tile grass = new GrassTile();
+	public static Tile floor = new FloorTile(2, 0, 2);
+
+	public static Tile wall0 = new WallTile(3, 0, 1); // LOWER WALL
 	
+	public static Tile wall1_0 = new WallTile(4, 2, 2); // TOP LEFT WALL
+	public static Tile wall1_1 = new WallTile(5, 3, 2); // TOP MIDDLE WALL
+	public static Tile wall1_2 = new WallTile(6, 4, 2); // TOP RIGHT WALL
+	
+	public static Tile wall2_0 = new WallTile(7, 2, 1); // ROOF LEFT EDGE
+	public static Tile wall2_1 = new WallTile(8, 3, 1); // ROOF MIDDLE
+	public static Tile wall2_2 = new WallTile(9, 4, 1); // ROOF RIGHT EDGE
+	
+	public static Tile wall3_0 = new WallTile(10, 2, 0); // TOP ROOF LEFT EDGE
+	public static Tile wall3_1 = new WallTile(11, 3, 0); // TOP ROOF MIDDLE
+	public static Tile wall3_2 = new WallTile(12, 4, 0); // TOP ROOF RIGHT EDGE
+
 	public boolean solid;
-	
+
 	public abstract float[] getTexCoords();
+
 	public abstract byte getId();
+
 	public abstract boolean isSolid();
 
 	public static Tile getTile(byte id) {
@@ -37,7 +53,27 @@ public abstract class Tile {
 		case 1:
 			return Tile.stone;
 		case 2:
-			return Tile.grass;
+			return floor;
+		case 3:
+			return wall0;
+		case 4:
+			return wall1_0;
+		case 5:
+			return wall1_1;
+		case 6:
+			return wall1_2;
+		case 7:
+			return wall2_0;
+		case 8:
+			return wall2_1;
+		case 9:
+			return wall2_2;
+		case 10:
+			return wall3_0;
+		case 11:
+			return wall3_1;
+		case 12:
+			return wall3_2;
 		}
 
 		return Tile.stone;
