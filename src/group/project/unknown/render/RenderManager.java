@@ -33,6 +33,7 @@ public class RenderManager {
 	public TreeMap<Integer, Integer> displayLists = new TreeMap<Integer, Integer>();
 	public ArrayList<Vector2f> textureCoords = new ArrayList<Vector2f>();
 	public ArrayList<Vector2f> vertices = new ArrayList<Vector2f>();
+	public ArrayList<Vector2f> normals = new ArrayList<Vector2f>();
 	public ArrayList<Vector3f> colors = new ArrayList<Vector3f>();
 
 	public int layers;

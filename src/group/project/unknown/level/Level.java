@@ -54,14 +54,14 @@ public class Level {
 		lightShader.attach();
 
 		glEnable(GL_TEXTURE_2D);
-
+		
 		rm = new RenderManager(GL11.GL_QUADS, levelShader);
 		ll = new LevelLoader(rm);
 		ll.load("res/levels/" + levelName + ".map", -1, true);
 		ll.load("res/levels/" + levelName + "_roof.map", 1, false);
 
-		lights.add(new Light(500, 850, 50, 1.0f, 0.5f, 0.5f));
-		lights.add(new Light(900, 850, 50, 0.0f, 0.0f, 1f));
+		lights.add(new Light(500, 750, 20, 1.0f, 0.5f, 0.5f));
+		lights.add(new Light(850, 850, 20, 0.0f, 0.0f, 1f));
 
 		spawner = new Spawner(this);
 
@@ -85,8 +85,12 @@ public class Level {
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE);
 
+			levelShader.setUniform1f("elevation", 0f);
 			rm.render(-1, true);
-
+			
+			spawner.render();
+			player.render();
+			
 			lightShader.useProgram(true);
 			for (Light light : lights) {
 				glColorMask(true, true, true, true);
@@ -107,9 +111,6 @@ public class Level {
 			}
 			glDisable(GL_BLEND);
 			lightShader.useProgram(false);
-
-			spawner.render();
-			player.render();
 
 			rm.render(1, true);
 		}

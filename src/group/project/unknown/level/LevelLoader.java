@@ -33,8 +33,8 @@ public class LevelLoader {
 
 	/** Array of tiles. */
 	public byte[][] tiles;
-	public int tilesize;
-	
+	public static int tilesize = 64;
+
 	public HashMap<Integer, byte[][]> tilesList = new HashMap<Integer, byte[][]>();
 	public List<AABB> collision = new ArrayList<AABB>();
 
@@ -57,42 +57,42 @@ public class LevelLoader {
 	public void load(String url, int layer, boolean solid) {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(url));
-				
+
 			width = Integer.parseInt(br.readLine());
 			height = Integer.parseInt(br.readLine());
-			tilesize = Integer.parseInt(br.readLine());
-			
+
 			tiles = new byte[width][height];
-			
+
 			String divider = "\\s+";
 			for (int x = 0; x < width; x++) {
 				String line = br.readLine();
 				String[] tokens = line.split(divider);
-				
+
 				for (int y = 0; y < height; y++) {
 					tiles[y][x] = Byte.parseByte(tokens[y]);
 				}
 			}
-			
+
 			br.close();
-			
+
 			int nx, ny;
 			for (int x = 0; x < width; x++) {
 				for (int y = 0; y < height; y++) {
 					nx = x * tilesize;
 					ny = y * tilesize;
-					
+
 					float[] texC = Tile.getTile(tiles[x][y]).getTexCoords();
+					
 					if (Tile.getTile(tiles[x][y]).isSolid() && solid) {
-						collision.add(new AABB(nx, ny, tilesize, tilesize));
+						collision.add(Tile.getTile(tiles[x][y]).getCollision(nx, ny));
 					}
-					
+
 					if (tiles[x][y] == 0) continue;
-					
+
 					rm.addColor3f(new Vector3f(1f, 1f, 1f));
 					rm.addTextureCoord(new Vector2f(texC[0], texC[1]));
 					rm.addVertex2f(new Vector2f(nx, ny));
-					
+
 					rm.addColor3f(new Vector3f(1f, 1f, 1f));
 					rm.addTextureCoord(new Vector2f(texC[0] + Spritesheet.tiles.uniformSize(), texC[1]));
 					rm.addVertex2f(new Vector2f(nx + tilesize, ny));
@@ -114,7 +114,7 @@ public class LevelLoader {
 			generate();
 		}
 	}
-	
+
 	private void generate() {
 		Out.print("TODO");
 	}

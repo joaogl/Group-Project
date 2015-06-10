@@ -17,28 +17,30 @@
 package group.project.unknown.level.tiles;
 
 import org.lwjgl.util.vector.*;
-import group.project.unknown.level.*;
 
+import group.project.unknown.level.*;
 import group.project.unknown.render.*;
+import group.project.unknown.utils.*;
 
 public abstract class Tile {
 
 	public static Tile stone = new StoneTile();
-	public static Tile floor = new FloorTile(2, 0, 2);
+	public static Tile floor = new FloorTile(2, 0, 3);
 
-	public static Tile wall0 = new WallTile(3, 0, 1); // LOWER WALL
+	public static Tile wall0_0 = new WallTile(3, 0, 2); // LOWER WALL
+	public static Tile wall0_1 = new WallTile(4, 0, 1); // HIGHER WALL
 	
-	public static Tile wall1_0 = new WallTile(4, 2, 2); // TOP LEFT WALL
-	public static Tile wall1_1 = new WallTile(5, 3, 2); // TOP MIDDLE WALL
-	public static Tile wall1_2 = new WallTile(6, 4, 2); // TOP RIGHT WALL
+	public static Tile wall1_0 = new WallTile(5, 2, 2); // LOWER ROOF LEFT WALL
+	public static Tile wall1_1 = new WallTile(6, 3, 2); // LOWER ROOF MIDDLE WALL
+	public static Tile wall1_2 = new WallTile(7, 4, 2); // LOWER ROOF RIGHT WALL
 	
-	public static Tile wall2_0 = new WallTile(7, 2, 1); // ROOF LEFT EDGE
-	public static Tile wall2_1 = new WallTile(8, 3, 1); // ROOF MIDDLE
-	public static Tile wall2_2 = new WallTile(9, 4, 1); // ROOF RIGHT EDGE
+	public static Tile wall2_0 = new WallTile(8, 2, 1); //  ROOF LEFT EDGE
+	public static Tile wall2_1 = new WallTile(9, 3, 1); //  ROOF MIDDLE
+	public static Tile wall2_2 = new WallTile(10, 4, 1); // ROOF RIGHT EDGE
 	
-	public static Tile wall3_0 = new WallTile(10, 2, 0); // TOP ROOF LEFT EDGE
-	public static Tile wall3_1 = new WallTile(11, 3, 0); // TOP ROOF MIDDLE
-	public static Tile wall3_2 = new WallTile(12, 4, 0); // TOP ROOF RIGHT EDGE
+	public static Tile wall3_0 = new WallTile(11, 2, 0); // TOP ROOF LEFT EDGE
+	public static Tile wall3_1 = new WallTile(12, 3, 0); // TOP ROOF MIDDLE
+	public static Tile wall3_2 = new WallTile(13, 4, 0); // TOP ROOF RIGHT EDGE
 
 	public boolean solid;
 
@@ -47,32 +49,36 @@ public abstract class Tile {
 	public abstract byte getId();
 
 	public abstract boolean isSolid();
+	
+	public abstract AABB getCollision(int nx, int ny);
 
 	public static Tile getTile(byte id) {
 		switch (id) {
 		case 1:
-			return Tile.stone;
+			return stone;
 		case 2:
 			return floor;
 		case 3:
-			return wall0;
+			return wall0_0;
 		case 4:
-			return wall1_0;
+			return wall0_1;
 		case 5:
-			return wall1_1;
+			return wall1_0;
 		case 6:
-			return wall1_2;
+			return wall1_1;
 		case 7:
-			return wall2_0;
+			return wall1_2;
 		case 8:
-			return wall2_1;
+			return wall2_0;
 		case 9:
-			return wall2_2;
+			return wall2_1;
 		case 10:
-			return wall3_0;
+			return wall2_2;
 		case 11:
-			return wall3_1;
+			return wall3_0;
 		case 12:
+			return wall3_1;
+		case 13:
 			return wall3_2;
 		}
 

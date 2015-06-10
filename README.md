@@ -1,8 +1,7 @@
 # Group-Project
 
 ### TODO:
-- Fix Proper shaders
-- Fix texture flickering when using glTransform
+- Make light source "spawnable" in spawner class.
 
 ### CONTROLS
 - WASD For movement

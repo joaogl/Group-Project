@@ -7,6 +7,6 @@ void main() {
 
 	if (textureColor.w == 0)
 		discard;
-
+		
     gl_FragColor = textureColor * vec4(color, 1);
 }

@@ -17,6 +17,7 @@
 package group.project.unknown.level.tiles;
 
 import group.project.unknown.level.*;
+import group.project.unknown.utils.*;
 
 public class StoneTile extends Tile {
 	
@@ -29,7 +30,10 @@ public class StoneTile extends Tile {
 	}
 
 	public boolean isSolid() {
-		return false;
+		return true;
 	}
 
+	public AABB getCollision(int nx, int ny) {
+		return new AABB(nx, ny, LevelLoader.tilesize, LevelLoader.tilesize);
+	}
 }

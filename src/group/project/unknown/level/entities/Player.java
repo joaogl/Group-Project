@@ -16,6 +16,7 @@
 
 package group.project.unknown.level.entities;
 
+import group.project.unknown.*;
 import group.project.unknown.level.*;
 import group.project.unknown.level.tiles.*;
 import group.project.unknown.utils.*;
@@ -100,11 +101,7 @@ public class Player extends Entity {
 			if (!xCollision(tempPos.x)) position.x = tempPos.x;
 			if (!yCollision(tempPos.y)) position.y = tempPos.y;
 		}
-
-		if (KeyboardFilter.isKeyDown(Keyboard.KEY_LSHIFT)) {
-
-		}
-
+		
 		if (KeyboardFilter.isKeyDown(Keyboard.KEY_UP)) 		level.spawner.spawnPartcile(5, new Vector2f(position.x, position.y), new Vector3f(0, 1, 1), 350, 10, 180, 10);
 		if (KeyboardFilter.isKeyDown(Keyboard.KEY_DOWN)) 	level.spawner.spawnPartcile(5, new Vector2f(position.x, position.y), new Vector3f(0, 1, 1), 350, 10, 0, 10);
 		if (KeyboardFilter.isKeyDown(Keyboard.KEY_RIGHT)) 	level.spawner.spawnPartcile(5, new Vector2f(position.x, position.y), new Vector3f(0, 1, 1), 350, 10, 90, 10);
@@ -120,6 +117,18 @@ public class Player extends Entity {
 		glTranslatef(getX() - getCwidth() / 2, getY() - getCheight() / 2, 0);
 		{
 			level.rm.render(0);
+			
+			float rotation = (float) Math.toDegrees(Math.atan2((Registry.getScreenWidth() / 2) - Mouse.getX(), (Registry.getScreenHeight() / 2) - Mouse.getY()));
+			glTranslatef(getCwidth() / 2, getCheight() / 2, 0);
+			glRotatef(rotation, 0, 0, 1);
+			glBegin(GL_QUADS); {
+				glVertex2f(-2.5f, 0);
+				glVertex2f(2.5f, 0);
+				glVertex2f(2.5f, 100);
+				glVertex2f(-2.5f, 100);
+			} glEnd();
+			glRotatef(-rotation, 0, 0, 1);
+			glTranslatef(-(getCwidth() / 2), -(getCheight() / 2), 0);
 		}
 		glTranslatef(-getX() + getCwidth() / 2, -getY() + getCheight() / 2, 0);
 	}
